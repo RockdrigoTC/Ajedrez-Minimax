@@ -430,9 +430,11 @@ def evaluar_tablero(tablero, turno):
 
     puntaje_jugador = 0
     puntaje_oponente = 0
-
-    if verificar_jaque_mate(copy.deepcopy(tablero), turno):
-        return -1000
+    if verificar_jaque(tablero, turno):
+        puntaje_jugador -= 100
+        puntaje_oponente += 100
+        if verificar_jaque_mate(copy.deepcopy(tablero), turno):
+            return -1000
 
     for i in range(1, 9):
         for j in range(1, 9):
@@ -453,10 +455,6 @@ def evaluar_tablero(tablero, turno):
 
     puntaje_jugador += cobertura_rey(tablero, piezas_jugador, rey_jugador)
     puntaje_oponente += cobertura_rey(tablero, piezas_oponente, rey_oponente)
-
-    if verificar_jaque(tablero, turno):
-        puntaje_jugador -= 100
-        puntaje_oponente += 100
 
     return puntaje_jugador - puntaje_oponente
 
@@ -539,6 +537,10 @@ def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
             else:
                 nuevo_turno = turno
 
+            # Verificar si hay jaque mate
+            if verificar_jaque_mate(copia_tablero, nuevo_turno):
+                return -1000  # Valor muy negativo para el jugador en turno
+
             evaluacion = minimax(
                 copia_tablero, profundidad - 1, alpha, beta, False, nuevo_turno
             )
@@ -563,6 +565,10 @@ def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
 
             nuevo_turno = cambiar_turno(turno)
 
+            # Verificar si hay jaque mate
+            if verificar_jaque_mate(copia_tablero, nuevo_turno):
+                return 1000  # Valor muy positivo para el jugador en turno
+
             evaluacion = minimax(
                 copia_tablero, profundidad - 1, alpha, beta, True, nuevo_turno
             )
@@ -584,7 +590,7 @@ limpiar_pantalla()
 turno = "Blancas"
 while True:
     print("Calculando mejor movimiento...")
-    mejor_movimiento, valor_evaluacion = minimax(
+    result = minimax(
         copy.deepcopy(tablero_partida),
         PROFUNDIDAD_MAXIMA,
         -float("inf"),
@@ -592,12 +598,21 @@ while True:
         True,
         turno,
     )
-    if mejor_movimiento is not None:
-        origen = mejor_movimiento[0]
-        destino = mejor_movimiento[1]
-        print(
-            f"El mejor movimiento es: {traducir_cordenadas(origen[1])}{origen[0]} -> {traducir_cordenadas(destino[1])}{destino[0]}"
-        )
+    if type(result) == tuple:
+        mejor_movimiento, valor_evaluacion = result
+        if mejor_movimiento is not None:
+            origen = mejor_movimiento[0]
+            destino = mejor_movimiento[1]
+            print(
+                f"El mejor movimiento es: {traducir_cordenadas(origen[1])}{origen[0]} -> {traducir_cordenadas(destino[1])}{destino[0]}"
+            )
+            print(f"Con una evaluación de: {valor_evaluacion}")
+    else:
+        print("No se encontró mejor movimiento")
+        if type(result) == int:
+            print("Se retorna un entero")
+        elif type(result) == float:
+            print("Se retorna un float")
 
     if verificar_jaque_mate(copy.deepcopy(tablero_partida), turno):
         print(f"Jaque mate a jugador {turno}")
