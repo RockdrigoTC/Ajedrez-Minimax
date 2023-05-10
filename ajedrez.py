@@ -22,29 +22,29 @@ PIEZAS_B = [REY_B, REINA_B, TORRE_B, ALFIL_B, CABALLO_B, PEON_B]
 
 
 # Tablero de ajedrez
-# tablero_partida = [
-#     [" ", "A", "B", "C", "D", "E", "F", "G", "H"],
-#     ["1", "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
-#     ["2", "♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
-#     ["3", "□", "■", "□", "■", "□", "■", "□", "■"],
-#     ["4", "■", "□", "■", "□", "■", "□", "■", "□"],
-#     ["5", "□", "■", "□", "■", "□", "■", "□", "■"],
-#     ["6", "■", "□", "■", "□", "■", "□", "■", "□"],
-#     ["7", "♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
-#     ["8", "♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
-# ]
-
 tablero_partida = [
     [" ", "A", "B", "C", "D", "E", "F", "G", "H"],
-    ["1", "■", "□", "♚", "♛", "♟", "□", "■", "♖"],
-    ["2", "□", "♟", "♟", "■", "□", "■", "♙", "■"],
-    ["3", "♙", "□", "■", "□", "■", "♙", "■", "□"],
-    ["4", "□", "■", "♘", "■", "□", "■", "□", "■"],
-    ["5", "■", "□", "■", "□", "■", "♙", "■", "♖"],
-    ["6", "□", "■", "□", "■", "□", "♔", "□", "■"],
-    ["7", "■", "□", "■", "□", "■", "□", "■", "□"],
-    ["8", "□", "■", "□", "■", "□", "■", "□", "■"],
+    ["1", "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
+    ["2", "♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
+    ["3", "□", "■", "□", "■", "□", "■", "□", "■"],
+    ["4", "■", "□", "■", "□", "■", "□", "■", "□"],
+    ["5", "□", "■", "□", "■", "□", "■", "□", "■"],
+    ["6", "■", "□", "■", "□", "■", "□", "■", "□"],
+    ["7", "♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
+    ["8", "♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
 ]
+
+# tablero_partida = [
+#     [" ", "A", "B", "C", "D", "E", "F", "G", "H"],
+#     ["1", "■", "□", "♚", "♛", "♟", "□", "■", "♖"],
+#     ["2", "□", "♟", "♟", "■", "□", "■", "♙", "■"],
+#     ["3", "♙", "□", "■", "□", "■", "♙", "■", "□"],
+#     ["4", "□", "■", "♘", "■", "□", "■", "□", "■"],
+#     ["5", "■", "□", "■", "□", "■", "♙", "■", "♖"],
+#     ["6", "□", "■", "□", "■", "□", "♔", "□", "■"],
+#     ["7", "■", "□", "■", "□", "■", "□", "■", "□"],
+#     ["8", "□", "■", "□", "■", "□", "■", "□", "■"],
+# ]
 
 
 def imprimir_tablero(tablero):
@@ -437,9 +437,17 @@ def evaluar_tablero(tablero, turno):
     for i in range(1, 9):
         for j in range(1, 9):
             if tablero[i][j] in piezas_jugador:
+                if tablero[i][j] == "♟":
+                    puntaje_jugador += i
+                elif tablero[i][j] == "♙":
+                    puntaje_jugador += 9 - i
                 puntaje_jugador += valor_pieza(tablero[i][j])
                 puntaje_jugador += len(movimientos_posibles(tablero, i, j))
             elif tablero[i][j] in piezas_oponente:
+                if tablero[i][j] == "♟":
+                    puntaje_jugador += i
+                elif tablero[i][j] == "♙":
+                    puntaje_jugador += 9 - i
                 puntaje_oponente += valor_pieza(tablero[i][j])
                 puntaje_oponente += len(movimientos_posibles(tablero, i, j))
 
@@ -510,59 +518,6 @@ def generar_movimientos(tablero, turno):
     return movimientos
 
 
-# def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
-#     if profundidad == 0:
-#         return evaluar_tablero(tablero, turno)
-
-#     mejor_movimiento = None
-
-#     if maximizando_jugador:
-#         max_eval = -float("inf")
-#         for movimiento in generar_movimientos(tablero, turno):
-#             copia_tablero = copy.deepcopy(tablero)
-#             f_origen, c_origen = movimiento[0]
-#             f_destino, c_destino = movimiento[1]
-#             mover_pieza(copia_tablero, f_origen, c_origen, f_destino, c_destino)
-
-#             nuevo_turno = cambiar_turno(turno)
-
-#             evaluacion = minimax(
-#                 copia_tablero, profundidad - 1, alpha, beta, False, nuevo_turno
-#             )
-#             if evaluacion > max_eval:
-#                 max_eval = evaluacion
-#                 mejor_movimiento = movimiento
-#             alpha = max(alpha, evaluacion)
-#             if beta <= alpha:
-#                 break
-#         if profundidad == PROFUNDIDAD_MAXIMA:
-#             return mejor_movimiento, max_eval
-#         return max_eval
-
-#     else:
-#         min_eval = float("inf")
-#         for movimiento in generar_movimientos(tablero, turno):
-#             copia_tablero = copy.deepcopy(tablero)
-#             f_origen, c_origen = movimiento[0]
-#             f_destino, c_destino = movimiento[1]
-#             mover_pieza(copia_tablero, f_origen, c_origen, f_destino, c_destino)
-
-#             nuevo_turno = cambiar_turno(turno)
-
-#             evaluacion = minimax(
-#                 copia_tablero, profundidad - 1, alpha, beta, True, nuevo_turno
-#             )
-#             if evaluacion < min_eval:
-#                 min_eval = evaluacion
-#                 mejor_movimiento = movimiento
-#             beta = min(beta, evaluacion)
-#             if beta <= alpha:
-#                 break
-#         if profundidad == PROFUNDIDAD_MAXIMA:
-#             return mejor_movimiento, min_eval
-#         return min_eval
-
-
 def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
     if profundidad == 0:
         evaluacion = evaluar_tablero(tablero, turno)
@@ -579,12 +534,14 @@ def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
             f_destino, c_destino = movimiento[1]
             mover_pieza(copia_tablero, f_origen, c_origen, f_destino, c_destino)
 
-            # nuevo_turno = cambiar_turno(turno)
+            if profundidad != PROFUNDIDAD_MAXIMA:
+                nuevo_turno = cambiar_turno(turno)
+            else:
+                nuevo_turno = turno
 
             evaluacion = minimax(
-                copia_tablero, profundidad - 1, alpha, beta, False, turno
+                copia_tablero, profundidad - 1, alpha, beta, False, nuevo_turno
             )
-            # print("Evaluación en profundidad", profundidad, ":", evaluacion)
 
             if evaluacion > max_eval:
                 max_eval = evaluacion
@@ -604,12 +561,11 @@ def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
             f_destino, c_destino = movimiento[1]
             mover_pieza(copia_tablero, f_origen, c_origen, f_destino, c_destino)
 
-            # nuevo_turno = cambiar_turno(turno)
+            nuevo_turno = cambiar_turno(turno)
 
             evaluacion = minimax(
-                copia_tablero, profundidad - 1, alpha, beta, True, turno
+                copia_tablero, profundidad - 1, alpha, beta, True, nuevo_turno
             )
-            # print("Evaluación en profundidad", profundidad, ":", evaluacion)
 
             if evaluacion < min_eval:
                 min_eval = evaluacion
