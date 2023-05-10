@@ -22,29 +22,29 @@ PIEZAS_B = [REY_B, REINA_B, TORRE_B, ALFIL_B, CABALLO_B, PEON_B]
 
 
 # Tablero de ajedrez
-tablero_partida = [
-    [" ", "A", "B", "C", "D", "E", "F", "G", "H"],
-    ["1", "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
-    ["2", "♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
-    ["3", "□", "■", "□", "■", "□", "■", "□", "■"],
-    ["4", "■", "□", "■", "□", "■", "□", "■", "□"],
-    ["5", "□", "■", "□", "■", "□", "■", "□", "■"],
-    ["6", "■", "□", "■", "□", "■", "□", "■", "□"],
-    ["7", "♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
-    ["8", "♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
-]
-
 # tablero_partida = [
 #     [" ", "A", "B", "C", "D", "E", "F", "G", "H"],
-#     ["1", "■", "□", "♚", "♛", "■", "□", "■", "♖"],
-#     ["2", "□", "♟", "♟", "■", "□", "■", "♙", "■"],
-#     ["3", "♙", "□", "■", "□", "■", "♙", "■", "□"],
-#     ["4", "□", "■", "♘", "■", "□", "■", "□", "■"],
-#     ["5", "■", "□", "■", "♖", "■", "♙", "■", "□"],
-#     ["6", "□", "■", "□", "■", "□", "♔", "□", "■"],
-#     ["7", "■", "□", "■", "□", "■", "□", "■", "□"],
-#     ["8", "□", "■", "□", "■", "□", "■", "□", "■"],
+#     ["1", "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
+#     ["2", "♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
+#     ["3", "□", "■", "□", "■", "□", "■", "□", "■"],
+#     ["4", "■", "□", "■", "□", "■", "□", "■", "□"],
+#     ["5", "□", "■", "□", "■", "□", "■", "□", "■"],
+#     ["6", "■", "□", "■", "□", "■", "□", "■", "□"],
+#     ["7", "♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
+#     ["8", "♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
 # ]
+
+tablero_partida = [
+    [" ", "A", "B", "C", "D", "E", "F", "G", "H"],
+    ["1", "■", "□", "♚", "♛", "♟", "□", "■", "♖"],
+    ["2", "□", "♟", "♟", "■", "□", "■", "♙", "■"],
+    ["3", "♙", "□", "■", "□", "■", "♙", "■", "□"],
+    ["4", "□", "■", "♘", "■", "□", "■", "□", "■"],
+    ["5", "■", "□", "■", "□", "■", "♙", "■", "♖"],
+    ["6", "□", "■", "□", "■", "□", "♔", "□", "■"],
+    ["7", "■", "□", "■", "□", "■", "□", "■", "□"],
+    ["8", "□", "■", "□", "■", "□", "■", "□", "■"],
+]
 
 
 def imprimir_tablero(tablero):
@@ -160,6 +160,8 @@ def verificar_movimiento(tablero, f_origen, c_origen, f_destino, c_destino):
                     tablero[f_destino][c_destino] == "□"
                     or tablero[f_destino][c_destino] == "■"
                 ):
+                    if f_destino == 8:
+                        tablero[f_destino][c_destino] = "♛"
                     return True
 
         if c_destino == c_origen + 1 or c_destino == c_origen - 1:
@@ -168,6 +170,8 @@ def verificar_movimiento(tablero, f_origen, c_origen, f_destino, c_destino):
                     tablero[f_destino][c_destino] != "□"
                     and tablero[f_destino][c_destino] != "■"
                 ):
+                    if f_destino == 8:
+                        tablero[f_destino][c_destino] = "♛"
                     return True
             return False
         return False
@@ -192,6 +196,8 @@ def verificar_movimiento(tablero, f_origen, c_origen, f_destino, c_destino):
                     tablero[f_destino][c_destino] == "□"
                     or tablero[f_destino][c_destino] == "■"
                 ):
+                    if f_destino == 1:
+                        tablero[f_destino][c_destino] = "♕"
                     return True
 
         if c_destino == c_origen + 1 or c_destino == c_origen - 1:
@@ -200,6 +206,8 @@ def verificar_movimiento(tablero, f_origen, c_origen, f_destino, c_destino):
                     tablero[f_destino][c_destino] != "□"
                     and tablero[f_destino][c_destino] != "■"
                 ):
+                    if f_destino == 1:
+                        tablero[f_destino][c_destino] = "♕"
                     return True
             return False
         return False
@@ -297,18 +305,22 @@ def verificar_movimiento(tablero, f_origen, c_origen, f_destino, c_destino):
 def mover_pieza(tablero, f_origen, c_origen, f_destino, c_destino):
     if verificar_movimiento(tablero, f_origen, c_origen, f_destino, c_destino):
         tablero[f_destino][c_destino] = tablero[f_origen][c_origen]
-        if f_origen % 2 != 0:
-            if c_origen % 2 != 0:
-                tablero[f_origen][c_origen] = "□"
-            else:
-                tablero[f_origen][c_origen] = "■"
-        else:
-            if c_origen % 2 != 0:
-                tablero[f_origen][c_origen] = "■"
-            else:
-                tablero[f_origen][c_origen] = "□"
+        reconstruir_tablero(tablero, f_origen, c_origen)
         return True
     return False
+
+
+def reconstruir_tablero(tablero, f_origen, c_origen):
+    if f_origen % 2 != 0:
+        if c_origen % 2 != 0:
+            tablero[f_origen][c_origen] = "□"
+        else:
+            tablero[f_origen][c_origen] = "■"
+    else:
+        if c_origen % 2 != 0:
+            tablero[f_origen][c_origen] = "■"
+        else:
+            tablero[f_origen][c_origen] = "□"
 
 
 def posicion_pieza(tablero, pieza):
@@ -322,16 +334,7 @@ def posicion_pieza(tablero, pieza):
 def probar_movimiento(tablero, f_origen, c_origen, f_destino, c_destino):
     tablero_copia = copy.deepcopy(tablero)
     tablero_copia[f_destino][c_destino] = tablero_copia[f_origen][c_origen]
-    if f_origen % 2 != 0:
-        if c_origen % 2 != 0:
-            tablero_copia[f_origen][c_origen] = "□"
-        else:
-            tablero_copia[f_origen][c_origen] = "■"
-    else:
-        if c_origen % 2 != 0:
-            tablero_copia[f_origen][c_origen] = "■"
-        else:
-            tablero_copia[f_origen][c_origen] = "□"
+    reconstruir_tablero(tablero, f_origen, c_origen)
     return copy.deepcopy(tablero_copia)
 
 
@@ -370,8 +373,10 @@ def verificar_jaque(tablero, turno):
     elif turno == "Negras":
         rey = REY_N
         piezas_color = PIEZAS_B
-
-    f_rey, c_rey = posicion_pieza(tablero, rey)
+    posicion = posicion_pieza(tablero, rey)
+    if posicion is None:
+        return True
+    f_rey, c_rey = posicion
     for i in range(1, 9):
         for j in range(1, 9):
             if tablero[i][j] in piezas_color:
@@ -427,7 +432,7 @@ def evaluar_tablero(tablero, turno):
     puntaje_oponente = 0
 
     if verificar_jaque_mate(copy.deepcopy(tablero), turno):
-        return -1000, 1000
+        return -1000
 
     for i in range(1, 9):
         for j in range(1, 9):
@@ -445,7 +450,7 @@ def evaluar_tablero(tablero, turno):
         puntaje_jugador -= 100
         puntaje_oponente += 100
 
-    return puntaje_jugador, puntaje_oponente
+    return puntaje_jugador - puntaje_oponente
 
 
 def valor_pieza(pieza):
@@ -465,7 +470,10 @@ def valor_pieza(pieza):
 
 
 def cobertura_rey(tablero, piezas, rey):
-    f_rey, c_rey = posicion_pieza(tablero, rey)
+    posicion = posicion_pieza(tablero, rey)
+    if posicion is None:
+        return -1000
+    f_rey, c_rey = posicion
     cobertura = 0
     if f_rey == 1:
         cobertura += 1
@@ -486,10 +494,155 @@ def cobertura_rey(tablero, piezas, rey):
     return cobertura
 
 
+def generar_movimientos(tablero, turno):
+    if turno == "Blancas":
+        piezas_jugador = PIEZAS_B
+    elif turno == "Negras":
+        piezas_jugador = PIEZAS_N
+
+    movimientos = []
+    for i in range(1, 9):
+        for j in range(1, 9):
+            if tablero[i][j] in piezas_jugador:
+                movimientos_pieza = movimientos_posibles(tablero, i, j)
+                for movimiento in movimientos_pieza:
+                    movimientos.append(((i, j), movimiento))
+    return movimientos
+
+
+# def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
+#     if profundidad == 0:
+#         return evaluar_tablero(tablero, turno)
+
+#     mejor_movimiento = None
+
+#     if maximizando_jugador:
+#         max_eval = -float("inf")
+#         for movimiento in generar_movimientos(tablero, turno):
+#             copia_tablero = copy.deepcopy(tablero)
+#             f_origen, c_origen = movimiento[0]
+#             f_destino, c_destino = movimiento[1]
+#             mover_pieza(copia_tablero, f_origen, c_origen, f_destino, c_destino)
+
+#             nuevo_turno = cambiar_turno(turno)
+
+#             evaluacion = minimax(
+#                 copia_tablero, profundidad - 1, alpha, beta, False, nuevo_turno
+#             )
+#             if evaluacion > max_eval:
+#                 max_eval = evaluacion
+#                 mejor_movimiento = movimiento
+#             alpha = max(alpha, evaluacion)
+#             if beta <= alpha:
+#                 break
+#         if profundidad == PROFUNDIDAD_MAXIMA:
+#             return mejor_movimiento, max_eval
+#         return max_eval
+
+#     else:
+#         min_eval = float("inf")
+#         for movimiento in generar_movimientos(tablero, turno):
+#             copia_tablero = copy.deepcopy(tablero)
+#             f_origen, c_origen = movimiento[0]
+#             f_destino, c_destino = movimiento[1]
+#             mover_pieza(copia_tablero, f_origen, c_origen, f_destino, c_destino)
+
+#             nuevo_turno = cambiar_turno(turno)
+
+#             evaluacion = minimax(
+#                 copia_tablero, profundidad - 1, alpha, beta, True, nuevo_turno
+#             )
+#             if evaluacion < min_eval:
+#                 min_eval = evaluacion
+#                 mejor_movimiento = movimiento
+#             beta = min(beta, evaluacion)
+#             if beta <= alpha:
+#                 break
+#         if profundidad == PROFUNDIDAD_MAXIMA:
+#             return mejor_movimiento, min_eval
+#         return min_eval
+
+
+def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
+    if profundidad == 0:
+        evaluacion = evaluar_tablero(tablero, turno)
+        print(f"Evaluación del tablero para {turno}:", evaluacion)
+        return evaluacion
+
+    mejor_movimiento = None
+
+    if maximizando_jugador:
+        max_eval = -float("inf")
+        for movimiento in generar_movimientos(tablero, turno):
+            copia_tablero = copy.deepcopy(tablero)
+            f_origen, c_origen = movimiento[0]
+            f_destino, c_destino = movimiento[1]
+            mover_pieza(copia_tablero, f_origen, c_origen, f_destino, c_destino)
+
+            # nuevo_turno = cambiar_turno(turno)
+
+            evaluacion = minimax(
+                copia_tablero, profundidad - 1, alpha, beta, False, turno
+            )
+            # print("Evaluación en profundidad", profundidad, ":", evaluacion)
+
+            if evaluacion > max_eval:
+                max_eval = evaluacion
+                mejor_movimiento = movimiento
+            alpha = max(alpha, evaluacion)
+            if beta <= alpha:
+                break
+        if profundidad == PROFUNDIDAD_MAXIMA:
+            return mejor_movimiento, max_eval
+        return max_eval
+
+    else:
+        min_eval = float("inf")
+        for movimiento in generar_movimientos(tablero, turno):
+            copia_tablero = copy.deepcopy(tablero)
+            f_origen, c_origen = movimiento[0]
+            f_destino, c_destino = movimiento[1]
+            mover_pieza(copia_tablero, f_origen, c_origen, f_destino, c_destino)
+
+            # nuevo_turno = cambiar_turno(turno)
+
+            evaluacion = minimax(
+                copia_tablero, profundidad - 1, alpha, beta, True, turno
+            )
+            # print("Evaluación en profundidad", profundidad, ":", evaluacion)
+
+            if evaluacion < min_eval:
+                min_eval = evaluacion
+                mejor_movimiento = movimiento
+            beta = min(beta, evaluacion)
+            if beta <= alpha:
+                break
+        if profundidad == PROFUNDIDAD_MAXIMA:
+            return mejor_movimiento, min_eval
+        return min_eval
+
+
+PROFUNDIDAD_MAXIMA = 3
 # loop principal
 limpiar_pantalla()
 turno = "Blancas"
 while True:
+    print("Calculando mejor movimiento...")
+    mejor_movimiento, valor_evaluacion = minimax(
+        copy.deepcopy(tablero_partida),
+        PROFUNDIDAD_MAXIMA,
+        -float("inf"),
+        float("inf"),
+        True,
+        turno,
+    )
+    if mejor_movimiento is not None:
+        origen = mejor_movimiento[0]
+        destino = mejor_movimiento[1]
+        print(
+            f"El mejor movimiento es: {traducir_cordenadas(origen[1])}{origen[0]} -> {traducir_cordenadas(destino[1])}{destino[0]}"
+        )
+
     if verificar_jaque_mate(copy.deepcopy(tablero_partida), turno):
         print(f"Jaque mate a jugador {turno}")
         imprimir_tablero(tablero_partida)
@@ -502,10 +655,6 @@ while True:
 
     if verificar_jaque(tablero_partida, turno):
         print(f"Jaque a jugador {turno}")
-
-    puntajes = evaluar_tablero(copy.deepcopy(tablero_partida), turno)
-    print(f"Puntaje jugador: {puntajes[0]}")
-    print(f"Puntaje oponente: {puntajes[1]}")
 
     print("Turno de las ", turno)
     imprimir_tablero(tablero_partida)
