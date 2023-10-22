@@ -1,6 +1,7 @@
 # Juego de ajedrez por consola
 import os
 import copy
+import time
 
 # Piezas de ajedrez
 REY_N = "♔"
@@ -21,30 +22,30 @@ PIEZAS_N = [REY_N, REINA_N, TORRE_N, ALFIL_N, CABALLO_N, PEON_N]
 PIEZAS_B = [REY_B, REINA_B, TORRE_B, ALFIL_B, CABALLO_B, PEON_B]
 
 
-# Tablero de ajedrez
-tablero_partida = [
-    [" ", "A", "B", "C", "D", "E", "F", "G", "H"],
-    ["1", "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
-    ["2", "♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
-    ["3", "□", "■", "□", "■", "□", "■", "□", "■"],
-    ["4", "■", "□", "■", "□", "■", "□", "■", "□"],
-    ["5", "□", "■", "□", "■", "□", "■", "□", "■"],
-    ["6", "■", "□", "■", "□", "■", "□", "■", "□"],
-    ["7", "♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
-    ["8", "♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
-]
-
+# # Tablero de ajedrez
 # tablero_partida = [
 #     [" ", "A", "B", "C", "D", "E", "F", "G", "H"],
-#     ["1", "■", "□", "♚", "♛", "♟", "□", "■", "♖"],
-#     ["2", "□", "♟", "♟", "■", "□", "■", "♙", "■"],
-#     ["3", "♙", "□", "■", "□", "■", "♙", "■", "□"],
-#     ["4", "□", "■", "♘", "■", "□", "■", "□", "■"],
-#     ["5", "■", "□", "■", "□", "■", "♙", "■", "♖"],
-#     ["6", "□", "■", "□", "■", "□", "♔", "□", "■"],
-#     ["7", "■", "□", "■", "□", "■", "□", "■", "□"],
-#     ["8", "□", "■", "□", "■", "□", "■", "□", "■"],
+#     ["1", "♜", "♞", "♝", "♛", "♚", "♝", "♞", "♜"],
+#     ["2", "♟", "♟", "♟", "♟", "♟", "♟", "♟", "♟"],
+#     ["3", "□", "■", "□", "■", "□", "■", "□", "■"],
+#     ["4", "■", "□", "■", "□", "■", "□", "■", "□"],
+#     ["5", "□", "■", "□", "■", "□", "■", "□", "■"],
+#     ["6", "■", "□", "■", "□", "■", "□", "■", "□"],
+#     ["7", "♙", "♙", "♙", "♙", "♙", "♙", "♙", "♙"],
+#     ["8", "♖", "♘", "♗", "♕", "♔", "♗", "♘", "♖"],
 # ]
+
+tablero_partida = [
+    [" ", "A", "B", "C", "D", "E", "F", "G", "H"],
+    ["1", "■", "□", "♚", "♛", "♟", "□", "■", "♖"],
+    ["2", "□", "♟", "♟", "■", "□", "■", "♙", "■"],
+    ["3", "♙", "□", "■", "□", "■", "♙", "■", "□"],
+    ["4", "□", "■", "♘", "■", "□", "■", "□", "■"],
+    ["5", "■", "□", "■", "□", "■", "♙", "■", "♖"],
+    ["6", "□", "■", "□", "■", "□", "♔", "□", "■"],
+    ["7", "■", "□", "■", "□", "■", "□", "■", "□"],
+    ["8", "□", "■", "□", "■", "□", "■", "□", "■"],
+]
 
 
 def imprimir_tablero(tablero):
@@ -512,20 +513,28 @@ def generar_movimientos(tablero, turno):
             if tablero[i][j] in piezas_jugador:
                 movimientos_pieza = movimientos_posibles(tablero, i, j)
                 for movimiento in movimientos_pieza:
-                    movimientos.append(((i, j), movimiento))
+                    tablero_copia = probar_movimiento(
+                        copy.deepcopy(tablero), i, j, movimiento[0], movimiento[1]
+                    )
+                    if not verificar_jaque(tablero_copia, turno):
+                        movimientos.append(((i, j), movimiento))
     return movimientos
 
 
 def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
     if profundidad == 0:
         evaluacion = evaluar_tablero(tablero, turno)
-        print(f"Evaluación del tablero para {turno}:", evaluacion)
+        turno_revertido = cambiar_turno(turno)
+        # print(f"Evaluación del tablero para {turno_revertido}:", evaluacion)
         return evaluacion
 
     mejor_movimiento = None
 
     if maximizando_jugador:
         max_eval = -float("inf")
+
+        # if verificar_jaque_mate(tablero, turno):
+        #     return 1000
         for movimiento in generar_movimientos(tablero, turno):
             copia_tablero = copy.deepcopy(tablero)
             f_origen, c_origen = movimiento[0]
@@ -536,10 +545,6 @@ def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
                 nuevo_turno = cambiar_turno(turno)
             else:
                 nuevo_turno = turno
-
-            # Verificar si hay jaque mate
-            if verificar_jaque_mate(copia_tablero, nuevo_turno):
-                return -1000  # Valor muy negativo para el jugador en turno
 
             evaluacion = minimax(
                 copia_tablero, profundidad - 1, alpha, beta, False, nuevo_turno
@@ -557,6 +562,10 @@ def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
 
     else:
         min_eval = float("inf")
+
+        if verificar_jaque_mate(copy.deepcopy(tablero), turno):
+            return -1000
+
         for movimiento in generar_movimientos(tablero, turno):
             copia_tablero = copy.deepcopy(tablero)
             f_origen, c_origen = movimiento[0]
@@ -565,9 +574,8 @@ def minimax(tablero, profundidad, alpha, beta, maximizando_jugador, turno):
 
             nuevo_turno = cambiar_turno(turno)
 
-            # Verificar si hay jaque mate
-            if verificar_jaque_mate(copia_tablero, nuevo_turno):
-                return 1000  # Valor muy positivo para el jugador en turno
+            if verificar_jaque_mate(copy.deepcopy(copia_tablero), nuevo_turno):
+                return 1000
 
             evaluacion = minimax(
                 copia_tablero, profundidad - 1, alpha, beta, True, nuevo_turno
@@ -629,10 +637,17 @@ while True:
 
     print("Turno de las ", turno)
     imprimir_tablero(tablero_partida)
+    time.sleep(2)
     print("Ingrese la posición de la pieza a mover")
-    origen = input("Origen: ")
+    # origen = input("Origen: ")
+    origen = traducir_cordenadas(origen[1]) + str(origen[0])
+    print("Origen:", origen)
     print("Ingrese la posición de destino")
-    destino = input("Destino: ")
+    time.sleep(1)
+    # destino = input("Destino: ")
+    destino = traducir_cordenadas(destino[1]) + str(destino[0])
+    print("Destino:", destino)
+    time.sleep(1)
 
     c_origen = traducir_cordenadas(origen[0])
     f_origen = int(origen[1])
@@ -652,3 +667,4 @@ while True:
     else:
         limpiar_pantalla()
         print("Movimiento inválido")
+        time.sleep(2)
